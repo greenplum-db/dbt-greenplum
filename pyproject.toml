@@ -1,9 +1,9 @@
 [project]
 dynamic = ["version"]
-name = "dbt-postgres"
+name = "dbt-greenplum"
 description = "The set of adapter protocols and base functionality that supports integration with dbt-core"
 readme = "README.md"
-keywords = ["dbt", "adapter", "adapters", "database", "elt", "dbt-core", "dbt Core", "dbt Cloud", "dbt Labs", "postgres"]
+keywords = ["dbt", "adapter", "adapters", "database", "elt", "dbt-core", "dbt Core", "dbt Cloud", "dbt Labs", "greenplum"]
 requires-python = ">=3.8.0"
 authors = [
     { name = "dbt Labs", email = "info@dbtlabs.com" },
@@ -30,14 +30,13 @@ dependencies = [
     # installed via dbt-adapters but used directly
     "dbt-common>=0.1.0a1,<2.0",
     "agate>=1.0,<2.0",
+    "dbt-postgres==1.8.2",
 ]
 
 [project.urls]
-Homepage = "https://github.com/dbt-labs/dbt-postgres"
-Documentation = "https://docs.getdbt.com"
-Repository = "https://github.com/dbt-labs/dbt-postgres.git"
-Issues = "https://github.com/dbt-labs/dbt-postgres/issues"
-Changelog = "https://github.com/dbt-labs/dbt-postgres/blob/main/CHANGELOG.md"
+Repository = "https://github.gwd.broadcom.net/TNZ/dbt-greenplum.git"
+Issues = "https://github.gwd.broadcom.net/TNZ/dbt-greenplum/issues"
+Changelog = "https://github.gwd.broadcom.net/TNZ/dbt-greenplum/blob/main/CHANGELOG.md"
 
 [build-system]
 requires = ["hatchling"]
@@ -50,7 +49,7 @@ include = ["dbt"]
 packages = ["dbt"]
 
 [tool.hatch.version]
-path = "dbt/adapters/postgres/__version__.py"
+path = "dbt/adapters/greenplum/__version__.py"
 
 [tool.hatch.envs.default]
 dependencies = [
@@ -103,13 +102,13 @@ check-all = [
 ]
 check-wheel = [
     "twine check dist/*",
-    "find ./dist/dbt_postgres-*.whl -maxdepth 1 -type f | xargs python -m pip install --force-reinstall --find-links=dist/",
-    "pip freeze | grep dbt-postgres",
+    "find ./dist/dbt_greenplum-*.whl -maxdepth 1 -type f | xargs python -m pip install --force-reinstall --find-links=dist/",
+    "pip freeze | grep dbt-greenplum",
 ]
 check-sdist = [
     "check-wheel-contents dist/*.whl --ignore W007,W008",
-    "find ./dist/dbt_postgres-*.gz -maxdepth 1 -type f | xargs python -m pip install --force-reinstall --find-links=dist/",
-    "pip freeze | grep dbt-postgres",
+    "find ./dist/dbt_greenplum-*.gz -maxdepth 1 -type f | xargs python -m pip install --force-reinstall --find-links=dist/",
+    "pip freeze | grep dbt-greenplum",
 ]
 
 [tool.pytest]

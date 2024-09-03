@@ -80,8 +80,8 @@ override_view_adapter_pass_dep__macros__override_view_sql = """
 """
 
 override_view_adapter_macros__override_view_sql = """
-{%- materialization view, adapter='postgres' -%}
-{{ exceptions.raise_compiler_error('intentionally raising an error in the postgres view materialization') }}
+{%- materialization view, adapter='greenplum' -%}
+{{ exceptions.raise_compiler_error('intentionally raising an error in the greenplum view materialization') }}
 {%- endmaterialization -%}
 
 {# copy+pasting the default view impl #}
@@ -161,8 +161,8 @@ config-version: 2
 """
 
 override_view_adapter_dep__macros__override_view_sql = """
-{%- materialization view, adapter='postgres' -%}
-{{ exceptions.raise_compiler_error('intentionally raising an error in the postgres view materialization') }}
+{%- materialization view, adapter='greenplum' -%}
+{{ exceptions.raise_compiler_error('intentionally raising an error in the greenplum view materialization') }}
 {%- endmaterialization -%}
 
 {# copy+pasting the default view impl #}

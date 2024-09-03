@@ -1108,7 +1108,7 @@ local_utils__macros__datediff_sql = """
 {% endmacro %}
 
 
-{% macro postgres__datediff(first_date, second_date, datepart) %}
+{% macro greenplum__datediff(first_date, second_date, datepart) %}
 
     {% if datepart == 'year' %}
         (date_part('year', ({{second_date}})::date) - date_part('year', ({{first_date}})::date))

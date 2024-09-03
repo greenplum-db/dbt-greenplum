@@ -4,13 +4,13 @@ from dbt.adapters.contracts.connection import Connection, Identifier
 from dbt_common.helper_types import Port
 import psycopg2
 
-from dbt.adapters.postgres import PostgresCredentials, PostgresConnectionManager
+from dbt.adapters.greenplum import GreenplumCredentials, GreenplumConnectionManager
 
 
 class TestConnectionManagerOpen(TestCase):
     connection = None
 
-    # Postgres-specific
+    # Greenplum-specific
     def setUp(self):
         self.connection = self.get_connection()
 
@@ -18,7 +18,7 @@ class TestConnectionManagerOpen(TestCase):
         if connection := self.connection:
             pass
         else:
-            credentials = PostgresCredentials(
+            credentials = GreenplumCredentials(
                 host="localhost",
                 user="test-user",
                 port=Port(1111),
@@ -27,13 +27,13 @@ class TestConnectionManagerOpen(TestCase):
                 schema="test-schema",
                 retries=2,
             )
-            connection = Connection(Identifier("postgres"), None, credentials)
+            connection = Connection(Identifier("greenplum"), None, credentials)
         return connection
 
     def test_open(self):
-        """Test opening a Postgres Connection with failures in the first 3 attempts.
+        """Test opening a Greenplum Connection with failures in the first 3 attempts.
 
-        This test uses a Connection populated with test PostgresCredentials values, and
+        This test uses a Connection populated with test GreenplumCredentials values, and
         expects a mock connect to raise a psycopg2.errors.ConnectionFailuer
         in the first 3 invocations, after which the mock should return True. As a result:
         * The Connection state should be "open" and the handle True, as connect
@@ -53,7 +53,7 @@ class TestConnectionManagerOpen(TestCase):
             return True
 
         with mock.patch("psycopg2.connect", wraps=connect) as mock_connect:
-            PostgresConnectionManager.open(conn)
+            GreenplumConnectionManager.open(conn)
 
             assert mock_connect.call_count == 3
 

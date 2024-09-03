@@ -20,10 +20,10 @@ def dbt_profile_data(unique_schema):
         "test": {
             "outputs": {
                 "default": {
-                    "type": "postgres",
+                    "type": "greenplum",
                     "threads": 4,
                     "host": "localhost",
-                    "port": 5432,
+                    "port": 7000,
                     "user": "root",
                     "pass": "password",
                     "dbname": "dbtMixedCase",

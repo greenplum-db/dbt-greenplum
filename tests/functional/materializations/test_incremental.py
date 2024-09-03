@@ -37,12 +37,20 @@ def test_basic(project):
     assert macro_func
     assert type(macro_func).__name__ == "MacroGenerator"
 
-    # This incremental strategy only works for Postgres >= 15
+    # Greenplum-Specific: Greenplum does NOT support merge statement, so we disable this test case.
+    # This incremental strategy only works for postgres >= 15
+    """
     macro_func = project.adapter.get_incremental_strategy_macro(context, "merge")
     assert macro_func
     assert type(macro_func).__name__ == "MacroGenerator"
+    """
 
-    # This incremental strategy is not valid for Postgres
+    # Greenplum-Specific: dbt-greenplum supports "truncate+insert", so we add this test case.
+    macro_func = project.adapter.get_incremental_strategy_macro(context, "truncate+insert")
+    assert macro_func
+    assert type(macro_func).__name__ == "MacroGenerator"
+
+    # This incremental strategy is not valid for postgres
     with pytest.raises(DbtRuntimeError) as excinfo:
         macro_func = project.adapter.get_incremental_strategy_macro(context, "insert_overwrite")
     assert "insert_overwrite" in str(excinfo.value)

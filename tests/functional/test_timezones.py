@@ -25,13 +25,13 @@ class TestTimezones:
             "test": {
                 "outputs": {
                     "dev": {
-                        "type": "postgres",
+                        "type": "greenplum",
                         "threads": 1,
                         "host": "localhost",
-                        "port": int(os.getenv("POSTGRES_TEST_PORT", 5432)),
-                        "user": os.getenv("POSTGRES_TEST_USER", "root"),
-                        "pass": os.getenv("POSTGRES_TEST_PASS", "password"),
-                        "dbname": os.getenv("POSTGRES_TEST_DATABASE", "dbt"),
+                        "port": int(os.getenv("GREENPLUM_TEST_PORT", 7000)),
+                        "user": os.getenv("GREENPLUM_TEST_USER", "gpadmin"),
+                        "pass": os.getenv("GREENPLUM_TEST_PASS", "password"),
+                        "dbname": os.getenv("GREENPLUM_TEST_DATABASE", "dbt"),
                         "schema": unique_schema,
                     },
                 },

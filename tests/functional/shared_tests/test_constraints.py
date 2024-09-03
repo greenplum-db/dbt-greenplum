@@ -1,3 +1,4 @@
+import pytest
 from dbt.tests.adapter.constraints.test_constraints import (
     BaseTableConstraintsColumnsEqual,
     BaseViewConstraintsColumnsEqual,
@@ -51,10 +52,11 @@ class TestTableContractSqlHeader(BaseTableContractSqlHeader):
 class TestIncrementalContractSqlHeader(BaseIncrementalContractSqlHeader):
     pass
 
-
+# Greenplum-Specific: Greenplum requires that UNIQUE or PRIMARY KEY definitions are incompatible with each other.
+# So this test case will fail. we disable this test case here.
+@pytest.mark.skip("Greenplum requires that UNIQUE or PRIMARY KEY definitions are incompatible with each other.")
 class TestModelConstraintsRuntimeEnforcement(BaseModelConstraintsRuntimeEnforcement):
     pass
-
 
 class TestConstraintQuotedColumn(BaseConstraintQuotedColumn):
     pass

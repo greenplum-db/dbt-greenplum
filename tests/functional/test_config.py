@@ -11,7 +11,7 @@ import dbt.tracking
 import pytest
 import yaml
 
-from dbt.adapters.postgres import PostgresCredentials
+from dbt.adapters.greenplum import GreenplumCredentials
 from tests.functional.utils import normalize
 
 
@@ -119,14 +119,14 @@ class BaseConfigTest(TestCase):
         self.default_profile_data = {
             "default": {
                 "outputs": {
-                    "postgres": {
-                        "type": "postgres",
-                        "host": "postgres-db-hostname",
+                    "greenplum": {
+                        "type": "greenplum",
+                        "host": "greenplum-db-hostname",
                         "port": 5555,
                         "user": "db_user",
                         "pass": "db_pass",
-                        "dbname": "postgres-db-name",
-                        "schema": "postgres-schema",
+                        "dbname": "greenplum-db-name",
+                        "schema": "greenplum-schema",
                         "threads": 7,
                     },
                     "with-vars": {
@@ -148,22 +148,22 @@ class BaseConfigTest(TestCase):
                         "schema": "{{ env_var('env_value_schema') }}",
                     },
                 },
-                "target": "postgres",
+                "target": "greenplum",
             },
             "other": {
                 "outputs": {
-                    "other-postgres": {
-                        "type": "postgres",
-                        "host": "other-postgres-db-hostname",
+                    "other-greenplum": {
+                        "type": "greenplum",
+                        "host": "other-greenplum-db-hostname",
                         "port": 4444,
                         "user": "other_db_user",
                         "pass": "other_db_pass",
-                        "dbname": "other-postgres-db-name",
-                        "schema": "other-postgres-schema",
+                        "dbname": "other-greenplum-db-name",
+                        "schema": "other-greenplum-schema",
                         "threads": 2,
                     }
                 },
-                "target": "other-postgres",
+                "target": "other-greenplum",
             },
             "empty_profile_data": {},
         }
@@ -179,13 +179,13 @@ class BaseConfigTest(TestCase):
             profile=None,
         )
         self.env_override = {
-            "env_value_type": "postgres",
-            "env_value_host": "env-postgres-host",
+            "env_value_type": "greenplum",
+            "env_value_host": "env-greenplum-host",
             "env_value_port": "6543",
-            "env_value_user": "env-postgres-user",
-            "env_value_pass": "env-postgres-pass",
-            "env_value_dbname": "env-postgres-dbname",
-            "env_value_schema": "env-postgres-schema",
+            "env_value_user": "env-greenplum-user",
+            "env_value_pass": "env-greenplum-pass",
+            "env_value_dbname": "env-greenplum-dbname",
+            "env_value_schema": "env-greenplum-schema",
             "env_value_profile": "default",
         }
 
@@ -240,49 +240,49 @@ class TestProfile(BaseConfigTest):
     def test_from_raw_profiles(self):
         profile = self.from_raw_profiles()
         self.assertEqual(profile.profile_name, "default")
-        self.assertEqual(profile.target_name, "postgres")
+        self.assertEqual(profile.target_name, "greenplum")
         self.assertEqual(profile.threads, 7)
-        self.assertTrue(isinstance(profile.credentials, PostgresCredentials))
-        self.assertEqual(profile.credentials.type, "postgres")
-        self.assertEqual(profile.credentials.host, "postgres-db-hostname")
+        self.assertTrue(isinstance(profile.credentials, GreenplumCredentials))
+        self.assertEqual(profile.credentials.type, "greenplum")
+        self.assertEqual(profile.credentials.host, "greenplum-db-hostname")
         self.assertEqual(profile.credentials.port, 5555)
         self.assertEqual(profile.credentials.user, "db_user")
         self.assertEqual(profile.credentials.password, "db_pass")
-        self.assertEqual(profile.credentials.schema, "postgres-schema")
-        self.assertEqual(profile.credentials.database, "postgres-db-name")
+        self.assertEqual(profile.credentials.schema, "greenplum-schema")
+        self.assertEqual(profile.credentials.database, "greenplum-db-name")
 
     def test_missing_type(self):
-        del self.default_profile_data["default"]["outputs"]["postgres"]["type"]
+        del self.default_profile_data["default"]["outputs"]["greenplum"]["type"]
         with self.assertRaises(dbt.exceptions.DbtProfileError) as exc:
             self.from_raw_profiles()
         self.assertIn("type", str(exc.exception))
-        self.assertIn("postgres", str(exc.exception))
+        self.assertIn("greenplum", str(exc.exception))
         self.assertIn("default", str(exc.exception))
 
     def test_bad_type(self):
-        self.default_profile_data["default"]["outputs"]["postgres"]["type"] = "invalid"
+        self.default_profile_data["default"]["outputs"]["greenplum"]["type"] = "invalid"
         with self.assertRaises(dbt.exceptions.DbtProfileError) as exc:
             self.from_raw_profiles()
         self.assertIn("Credentials", str(exc.exception))
-        self.assertIn("postgres", str(exc.exception))
+        self.assertIn("greenplum", str(exc.exception))
         self.assertIn("default", str(exc.exception))
 
     def test_invalid_credentials(self):
-        del self.default_profile_data["default"]["outputs"]["postgres"]["host"]
+        del self.default_profile_data["default"]["outputs"]["greenplum"]["host"]
         with self.assertRaises(dbt.exceptions.DbtProfileError) as exc:
             self.from_raw_profiles()
         self.assertIn("Credentials", str(exc.exception))
-        self.assertIn("postgres", str(exc.exception))
+        self.assertIn("greenplum", str(exc.exception))
         self.assertIn("default", str(exc.exception))
 
     def test_missing_target(self):
         profile = self.default_profile_data["default"]
         del profile["target"]
-        profile["outputs"]["default"] = profile["outputs"]["postgres"]
+        profile["outputs"]["default"] = profile["outputs"]["greenplum"]
         profile = self.from_raw_profiles()
         self.assertEqual(profile.profile_name, "default")
         self.assertEqual(profile.target_name, "default")
-        self.assertEqual(profile.credentials.type, "postgres")
+        self.assertEqual(profile.credentials.type, "greenplum")
 
 
 @pytest.mark.skip("Flags() has no attribute PROFILES_DIR")
@@ -314,16 +314,16 @@ class TestProfileFile(BaseConfigTest):
         profile = self.from_args()
         from_raw = self.from_raw_profile_info()
 
-        self.assertEqual(profile.target_name, "postgres")
+        self.assertEqual(profile.target_name, "greenplum")
         self.assertEqual(profile.threads, 3)
-        self.assertTrue(isinstance(profile.credentials, PostgresCredentials))
-        self.assertEqual(profile.credentials.type, "postgres")
-        self.assertEqual(profile.credentials.host, "postgres-db-hostname")
+        self.assertTrue(isinstance(profile.credentials, GreenplumCredentials))
+        self.assertEqual(profile.credentials.type, "greenplum")
+        self.assertEqual(profile.credentials.host, "greenplum-db-hostname")
         self.assertEqual(profile.credentials.port, 5555)
         self.assertEqual(profile.credentials.user, "db_user")
         self.assertEqual(profile.credentials.password, "db_pass")
-        self.assertEqual(profile.credentials.schema, "postgres-schema")
-        self.assertEqual(profile.credentials.database, "postgres-db-name")
+        self.assertEqual(profile.credentials.schema, "greenplum-schema")
+        self.assertEqual(profile.credentials.database, "greenplum-db-name")
         self.assertEqual(profile, from_raw)
 
     def test_profile_override(self):
@@ -336,16 +336,16 @@ class TestProfileFile(BaseConfigTest):
             threads_override=3,
         )
 
-        self.assertEqual(profile.target_name, "other-postgres")
+        self.assertEqual(profile.target_name, "other-greenplum")
         self.assertEqual(profile.threads, 3)
-        self.assertTrue(isinstance(profile.credentials, PostgresCredentials))
-        self.assertEqual(profile.credentials.type, "postgres")
-        self.assertEqual(profile.credentials.host, "other-postgres-db-hostname")
+        self.assertTrue(isinstance(profile.credentials, GreenplumCredentials))
+        self.assertEqual(profile.credentials.type, "greenplum")
+        self.assertEqual(profile.credentials.host, "other-greenplum-db-hostname")
         self.assertEqual(profile.credentials.port, 4444)
         self.assertEqual(profile.credentials.user, "other_db_user")
         self.assertEqual(profile.credentials.password, "other_db_pass")
-        self.assertEqual(profile.credentials.schema, "other-postgres-schema")
-        self.assertEqual(profile.credentials.database, "other-postgres-db-name")
+        self.assertEqual(profile.credentials.schema, "other-greenplum-schema")
+        self.assertEqual(profile.credentials.database, "other-greenplum-db-name")
         self.assertEqual(profile, from_raw)
 
     def test_env_vars(self):
@@ -357,11 +357,11 @@ class TestProfileFile(BaseConfigTest):
         self.assertEqual(profile.profile_name, "default")
         self.assertEqual(profile.target_name, "with-vars")
         self.assertEqual(profile.threads, 1)
-        self.assertEqual(profile.credentials.type, "postgres")
-        self.assertEqual(profile.credentials.host, "env-postgres-host")
+        self.assertEqual(profile.credentials.type, "greenplum")
+        self.assertEqual(profile.credentials.host, "env-greenplum-host")
         self.assertEqual(profile.credentials.port, 6543)
-        self.assertEqual(profile.credentials.user, "env-postgres-user")
-        self.assertEqual(profile.credentials.password, "env-postgres-pass")
+        self.assertEqual(profile.credentials.user, "env-greenplum-user")
+        self.assertEqual(profile.credentials.password, "env-greenplum-pass")
         self.assertEqual(profile, from_raw)
 
     def test_env_vars_env_target(self):
@@ -375,17 +375,17 @@ class TestProfileFile(BaseConfigTest):
         self.assertEqual(profile.profile_name, "default")
         self.assertEqual(profile.target_name, "with-vars")
         self.assertEqual(profile.threads, 1)
-        self.assertEqual(profile.credentials.type, "postgres")
-        self.assertEqual(profile.credentials.host, "env-postgres-host")
+        self.assertEqual(profile.credentials.type, "greenplum")
+        self.assertEqual(profile.credentials.host, "env-greenplum-host")
         self.assertEqual(profile.credentials.port, 6543)
-        self.assertEqual(profile.credentials.user, "env-postgres-user")
-        self.assertEqual(profile.credentials.password, "env-postgres-pass")
+        self.assertEqual(profile.credentials.user, "env-greenplum-user")
+        self.assertEqual(profile.credentials.password, "env-greenplum-pass")
         self.assertEqual(profile, from_raw)
 
     def test_cli_and_env_vars(self):
         self.args.target = "cli-and-env-vars"
-        self.args.vars = {"cli_value_host": "cli-postgres-host"}
-        renderer = dbt.config.renderer.ProfileRenderer({"cli_value_host": "cli-postgres-host"})
+        self.args.vars = {"cli_value_host": "cli-greenplum-host"}
+        renderer = dbt.config.renderer.ProfileRenderer({"cli_value_host": "cli-greenplum-host"})
         with mock.patch.dict(os.environ, self.env_override):
             profile = self.from_args(renderer=renderer)
             from_raw = self.from_raw_profile_info(
@@ -396,9 +396,9 @@ class TestProfileFile(BaseConfigTest):
         self.assertEqual(profile.profile_name, "default")
         self.assertEqual(profile.target_name, "cli-and-env-vars")
         self.assertEqual(profile.threads, 1)
-        self.assertEqual(profile.credentials.type, "postgres")
-        self.assertEqual(profile.credentials.host, "cli-postgres-host")
+        self.assertEqual(profile.credentials.type, "greenplum")
+        self.assertEqual(profile.credentials.host, "cli-greenplum-host")
         self.assertEqual(profile.credentials.port, 6543)
-        self.assertEqual(profile.credentials.user, "env-postgres-user")
-        self.assertEqual(profile.credentials.password, "env-postgres-pass")
+        self.assertEqual(profile.credentials.user, "env-greenplum-user")
+        self.assertEqual(profile.credentials.password, "env-greenplum-pass")
         self.assertEqual(profile, from_raw)

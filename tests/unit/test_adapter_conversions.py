@@ -4,7 +4,7 @@ from unittest import TestCase
 import agate
 from dbt_common.clients import agate_helper
 
-from dbt.adapters.postgres import PostgresAdapter
+from dbt.adapters.greenplum import GreenplumAdapter
 
 
 class AdapterConversions(TestCase):
@@ -31,7 +31,7 @@ class AdapterConversions(TestCase):
         return table
 
 
-class TestPostgresAdapterConversions(AdapterConversions):
+class TestGreenplumAdapterConversions(AdapterConversions):
     def test_convert_text_type(self):
         rows = [
             ["", "a1", "stringval1"],
@@ -41,7 +41,7 @@ class TestPostgresAdapterConversions(AdapterConversions):
         agate_table = self._make_table_of(rows, agate.Text)
         expected = ["text", "text", "text"]
         for col_idx, expect in enumerate(expected):
-            assert PostgresAdapter.convert_text_type(agate_table, col_idx) == expect
+            assert GreenplumAdapter.convert_text_type(agate_table, col_idx) == expect
 
     def test_convert_number_type(self):
         rows = [
@@ -52,7 +52,7 @@ class TestPostgresAdapterConversions(AdapterConversions):
         agate_table = self._make_table_of(rows, agate.Number)
         expected = ["integer", "float8", "integer"]
         for col_idx, expect in enumerate(expected):
-            assert PostgresAdapter.convert_number_type(agate_table, col_idx) == expect
+            assert GreenplumAdapter.convert_number_type(agate_table, col_idx) == expect
 
     def test_convert_boolean_type(self):
         rows = [
@@ -63,7 +63,7 @@ class TestPostgresAdapterConversions(AdapterConversions):
         agate_table = self._make_table_of(rows, agate.Boolean)
         expected = ["boolean", "boolean", "boolean"]
         for col_idx, expect in enumerate(expected):
-            assert PostgresAdapter.convert_boolean_type(agate_table, col_idx) == expect
+            assert GreenplumAdapter.convert_boolean_type(agate_table, col_idx) == expect
 
     def test_convert_datetime_type(self):
         rows = [
@@ -80,7 +80,7 @@ class TestPostgresAdapterConversions(AdapterConversions):
             "timestamp without time zone",
         ]
         for col_idx, expect in enumerate(expected):
-            assert PostgresAdapter.convert_datetime_type(agate_table, col_idx) == expect
+            assert GreenplumAdapter.convert_datetime_type(agate_table, col_idx) == expect
 
     def test_convert_date_type(self):
         rows = [
@@ -91,7 +91,7 @@ class TestPostgresAdapterConversions(AdapterConversions):
         agate_table = self._make_table_of(rows, agate.Date)
         expected = ["date", "date", "date"]
         for col_idx, expect in enumerate(expected):
-            assert PostgresAdapter.convert_date_type(agate_table, col_idx) == expect
+            assert GreenplumAdapter.convert_date_type(agate_table, col_idx) == expect
 
     def test_convert_time_type(self):
         # dbt's default type testers don't have a TimeDelta
@@ -103,4 +103,4 @@ class TestPostgresAdapterConversions(AdapterConversions):
         agate_table = self._make_table_of(rows, agate.TimeDelta)
         expected = ["time", "time", "time"]
         for col_idx, expect in enumerate(expected):
-            assert PostgresAdapter.convert_time_type(agate_table, col_idx) == expect
+            assert GreenplumAdapter.convert_time_type(agate_table, col_idx) == expect

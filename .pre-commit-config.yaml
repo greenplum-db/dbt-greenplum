@@ -48,7 +48,7 @@ repos:
         -   --ignore-missing-imports
         -   --pretty
         -   --show-error-codes
-        files: ^dbt/adapters/postgres
+        files: ^dbt/adapters/greenplum
         additional_dependencies:
         -   types-PyYAML
         -   types-protobuf

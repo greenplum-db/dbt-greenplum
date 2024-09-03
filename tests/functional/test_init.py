@@ -22,7 +22,7 @@ class TestInitProjectWithExistingProfilesYml:
         manager.prompt.side_effect = [
             1,
             "localhost",
-            5432,
+            7000,
             "test_user",
             "test_password",
             "test_db",
@@ -39,13 +39,13 @@ class TestInitProjectWithExistingProfilesYml:
                     f"The profile test already exists in {os.path.join(project.profiles_dir, 'profiles.yml')}. Continue and overwrite it?"
                 ),
                 call.prompt(
-                    "Which database would you like to use?\n[1] postgres\n\n(Don't see the one you want? https://docs.getdbt.com/docs/available-adapters)\n\nEnter a number",
+                    "Which database would you like to use?\n[1] greenplum\n\n(Don't see the one you want? https://docs.getdbt.com/docs/available-adapters)\n\nEnter a number",
                     type=click.INT,
                 ),
                 call.prompt(
                     "host (hostname for the instance)", default=None, hide_input=False, type=None
                 ),
-                call.prompt("port", default=5432, hide_input=False, type=click.INT),
+                call.prompt("port", default=7000, hide_input=False, type=click.INT),
                 call.prompt("user (dev username)", default=None, hide_input=False, type=None),
                 call.prompt("pass (dev password)", default=None, hide_input=True, type=None),
                 call.prompt(
@@ -73,10 +73,10 @@ class TestInitProjectWithExistingProfilesYml:
       dbname: test_db
       host: localhost
       pass: test_password
-      port: 5432
+      port: 7000
       schema: test_schema
       threads: 4
-      type: postgres
+      type: greenplum
       user: test_user
   target: dev
 """
@@ -105,7 +105,7 @@ class TestInitProjectWithoutExistingProfilesYml:
         manager.prompt.side_effect = [
             1,
             "localhost",
-            5432,
+            7000,
             "test_user",
             "test_password",
             "test_db",
@@ -119,13 +119,13 @@ class TestInitProjectWithoutExistingProfilesYml:
         manager.assert_has_calls(
             [
                 call.prompt(
-                    "Which database would you like to use?\n[1] postgres\n\n(Don't see the one you want? https://docs.getdbt.com/docs/available-adapters)\n\nEnter a number",
+                    "Which database would you like to use?\n[1] greenplum\n\n(Don't see the one you want? https://docs.getdbt.com/docs/available-adapters)\n\nEnter a number",
                     type=click.INT,
                 ),
                 call.prompt(
                     "host (hostname for the instance)", default=None, hide_input=False, type=None
                 ),
-                call.prompt("port", default=5432, hide_input=False, type=click.INT),
+                call.prompt("port", default=7000, hide_input=False, type=click.INT),
                 call.prompt("user (dev username)", default=None, hide_input=False, type=None),
                 call.prompt("pass (dev password)", default=None, hide_input=True, type=None),
                 call.prompt(
@@ -153,10 +153,10 @@ class TestInitProjectWithoutExistingProfilesYml:
       dbname: test_db
       host: localhost
       pass: test_password
-      port: 5432
+      port: 7000
       schema: test_schema
       threads: 4
-      type: postgres
+      type: greenplum
       user: test_user
   target: dev
 """
@@ -204,7 +204,7 @@ class TestInitProjectWithoutExistingProfilesYmlOrTemplate:
         manager.assert_has_calls(
             [
                 call.prompt(
-                    "Which database would you like to use?\n[1] postgres\n\n(Don't see the one you want? https://docs.getdbt.com/docs/available-adapters)\n\nEnter a number",
+                    "Which database would you like to use?\n[1] greenplum\n\n(Don't see the one you want? https://docs.getdbt.com/docs/available-adapters)\n\nEnter a number",
                     type=click.INT,
                 ),
             ]
@@ -217,7 +217,7 @@ class TestInitProjectWithoutExistingProfilesYmlOrTemplate:
   outputs:
 
     dev:
-      type: postgres
+      type: greenplum
       threads: [1 or more]
       host: [host]
       port: [port]
@@ -227,7 +227,7 @@ class TestInitProjectWithoutExistingProfilesYmlOrTemplate:
       schema: [dev_schema]
 
     prod:
-      type: postgres
+      type: greenplum
       threads: [1 or more]
       host: [host]
       port: [port]
@@ -260,7 +260,7 @@ class TestInitProjectWithProfileTemplateWithoutExistingProfilesYml:
         with open("profile_template.yml", "w") as f:
             f.write(
                 """fixed:
-  type: postgres
+  type: greenplum
   threads: 4
   host: localhost
   dbname: my_db
@@ -273,7 +273,7 @@ prompts:
   port:
     hint: 'The port (for integer test purposes)'
     type: int
-    default: 5432
+    default: 7000
   user:
     hint: 'Your username'
   pass:
@@ -284,7 +284,7 @@ prompts:
         manager = Mock()
         manager.attach_mock(mock_prompt, "prompt")
         manager.attach_mock(mock_confirm, "confirm")
-        manager.prompt.side_effect = ["my_target", 5432, "test_username", "test_password"]
+        manager.prompt.side_effect = ["my_target", 7000, "test_username", "test_password"]
         mock_get_adapter.return_value = [project.adapter.type()]
         run_dbt(["init"])
         manager.assert_has_calls(
@@ -294,7 +294,7 @@ prompts:
                 ),
                 call.prompt(
                     "port (The port (for integer test purposes))",
-                    default=5432,
+                    default=7000,
                     hide_input=False,
                     type=click.INT,
                 ),
@@ -312,10 +312,10 @@ prompts:
       dbname: my_db
       host: localhost
       pass: test_password
-      port: 5432
+      port: 7000
       schema: my_schema
       threads: 4
-      type: postgres
+      type: greenplum
       user: test_username
   target: my_target
 """
@@ -341,7 +341,7 @@ class TestInitInvalidProfileTemplate:
         manager.prompt.side_effect = [
             1,
             "localhost",
-            5432,
+            7000,
             "test_username",
             "test_password",
             "test_db",
@@ -358,13 +358,13 @@ class TestInitInvalidProfileTemplate:
                     f"The profile test already exists in {os.path.join(project.profiles_dir, 'profiles.yml')}. Continue and overwrite it?"
                 ),
                 call.prompt(
-                    "Which database would you like to use?\n[1] postgres\n\n(Don't see the one you want? https://docs.getdbt.com/docs/available-adapters)\n\nEnter a number",
+                    "Which database would you like to use?\n[1] greenplum\n\n(Don't see the one you want? https://docs.getdbt.com/docs/available-adapters)\n\nEnter a number",
                     type=click.INT,
                 ),
                 call.prompt(
                     "host (hostname for the instance)", default=None, hide_input=False, type=None
                 ),
-                call.prompt("port", default=5432, hide_input=False, type=click.INT),
+                call.prompt("port", default=7000, hide_input=False, type=click.INT),
                 call.prompt("user (dev username)", default=None, hide_input=False, type=None),
                 call.prompt("pass (dev password)", default=None, hide_input=True, type=None),
                 call.prompt(
@@ -392,10 +392,10 @@ class TestInitInvalidProfileTemplate:
       dbname: test_db
       host: localhost
       pass: test_password
-      port: 5432
+      port: 7000
       schema: test_schema
       threads: 4
-      type: postgres
+      type: greenplum
       user: test_username
   target: dev
 """

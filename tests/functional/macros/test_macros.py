@@ -136,7 +136,7 @@ class TestMacroOverrideBuiltin:
 
 class TestMacroOverridePackage:
     """
-    The macro in `override-postgres-get-columns-macros` should override the
+    The macro in `override-greenplum-get-columns-macros` should override the
     `get_columns_in_relation` macro by default.
     """
 
@@ -156,9 +156,9 @@ class TestMacroOverridePackage:
 
 class TestMacroNotOverridePackage:
     """
-    The macro in `override-postgres-get-columns-macros` does NOT override the
+    The macro in `override-greenplum-get-columns-macros` does NOT override the
     `get_columns_in_relation` macro because we tell dispatch to not look at the
-    postgres macros.
+    greenplum macros.
     """
 
     @pytest.fixture(scope="class")

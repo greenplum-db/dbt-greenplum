@@ -76,7 +76,7 @@ macros__my_macros = """
     {{ exceptions.raise_compiler_error(msg) }}
 {% endmacro %}
 
-{% macro postgres__dispatch_to_parent() %}
+{% macro greenplum__dispatch_to_parent() %}
     {{ return('') }}
 {% endmacro %}
 """
@@ -119,7 +119,7 @@ macros__no_default_macros = """
     {{ exceptions.raise_compiler_error(msg) }}
 {% endmacro %}
 
-{% macro postgres__dispatch_to_parent() %}
+{% macro greenplum__dispatch_to_parent() %}
     {{ return('') }}
 {% endmacro %}
 """
@@ -131,7 +131,7 @@ macros__override_get_columns_macros = """
 """
 
 macros__package_override_get_columns_macros = """
-{% macro postgres__get_columns_in_relation(relation) %}
+{% macro greenplum__get_columns_in_relation(relation) %}
     {{ return('a string') }}
 {% endmacro %}
 """

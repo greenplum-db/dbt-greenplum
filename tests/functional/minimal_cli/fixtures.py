@@ -72,12 +72,12 @@ class BaseConfigProject:
             "jaffle_shop": {
                 "outputs": {
                     "dev": {
-                        "type": "postgres",
+                        "type": "greenplum",
                         "dbname": "dbt",
                         "schema": "jaffle_shop",
                         "host": "localhost",
                         "user": "root",
-                        "port": 5432,
+                        "port": 7000,
                         "pass": "password",
                     }
                 },

@@ -8,7 +8,7 @@ from dbt.adapters.contracts.relation import Path
 from dbt_common.context import set_invocation_context
 from dbt_common.exceptions import DbtValidationError
 
-from dbt.adapters.postgres import Plugin as PostgresPlugin, PostgresAdapter
+from dbt.adapters.greenplum import Plugin as GreenplumPlugin, GreenplumAdapter
 from tests.unit.utils import (
     config_from_parts_or_dicts,
     inject_adapter,
@@ -16,7 +16,7 @@ from tests.unit.utils import (
 )
 
 
-class TestPostgresAdapter(TestCase):
+class TestGreenplumAdapter(TestCase):
     def setUp(self):
         project_cfg = {
             "name": "X",
@@ -28,12 +28,12 @@ class TestPostgresAdapter(TestCase):
         profile_cfg = {
             "outputs": {
                 "test": {
-                    "type": "postgres",
-                    "dbname": "postgres",
+                    "type": "greenplum",
+                    "dbname": "greenplum",
                     "user": "root",
                     "host": "thishostshouldnotexist",
                     "pass": "password",
-                    "port": 5432,
+                    "port": 7000,
                     "schema": "public",
                 }
             },
@@ -47,8 +47,8 @@ class TestPostgresAdapter(TestCase):
     @property
     def adapter(self):
         if self._adapter is None:
-            self._adapter = PostgresAdapter(self.config, self.mp_context)
-            inject_adapter(self._adapter, PostgresPlugin)
+            self._adapter = GreenplumAdapter(self.config, self.mp_context)
+            inject_adapter(self._adapter, GreenplumPlugin)
         return self._adapter
 
     @mock.patch("dbt.adapters.postgres.connections.psycopg2")
@@ -59,7 +59,7 @@ class TestPostgresAdapter(TestCase):
             self.fail("got DbtValidationError: {}".format(str(e)))
         except BaseException as e:
             self.fail("acquiring connection failed with unknown exception: {}".format(str(e)))
-        self.assertEqual(connection.type, "postgres")
+        self.assertEqual(connection.type, "greenplum")
 
         psycopg2.connect.assert_not_called()
         connection.handle
@@ -111,11 +111,11 @@ class TestPostgresAdapter(TestCase):
         psycopg2.connect.assert_not_called()
         connection.handle
         psycopg2.connect.assert_called_once_with(
-            dbname="postgres",
+            dbname="greenplum",
             user="root",
             host="thishostshouldnotexist",
             password="password",
-            port=5432,
+            port=7000,
             connect_timeout=10,
             application_name="dbt",
         )
@@ -128,11 +128,11 @@ class TestPostgresAdapter(TestCase):
         psycopg2.connect.assert_not_called()
         connection.handle
         psycopg2.connect.assert_called_once_with(
-            dbname="postgres",
+            dbname="greenplum",
             user="root",
             host="thishostshouldnotexist",
             password="password",
-            port=5432,
+            port=7000,
             connect_timeout=30,
             application_name="dbt",
         )
@@ -144,11 +144,11 @@ class TestPostgresAdapter(TestCase):
         psycopg2.connect.assert_not_called()
         connection.handle
         psycopg2.connect.assert_called_once_with(
-            dbname="postgres",
+            dbname="greenplum",
             user="root",
             host="thishostshouldnotexist",
             password="password",
-            port=5432,
+            port=7000,
             connect_timeout=10,
             application_name="dbt",
         )
@@ -161,11 +161,11 @@ class TestPostgresAdapter(TestCase):
         psycopg2.connect.assert_not_called()
         connection.handle
         psycopg2.connect.assert_called_once_with(
-            dbname="postgres",
+            dbname="greenplum",
             user="root",
             host="thishostshouldnotexist",
             password="password",
-            port=5432,
+            port=7000,
             connect_timeout=10,
             keepalives_idle=256,
             application_name="dbt",
@@ -178,11 +178,11 @@ class TestPostgresAdapter(TestCase):
         psycopg2.connect.assert_not_called()
         connection.handle
         psycopg2.connect.assert_called_once_with(
-            dbname="postgres",
+            dbname="greenplum",
             user="root",
             host="thishostshouldnotexist",
             password="password",
-            port=5432,
+            port=7000,
             connect_timeout=10,
             application_name="dbt",
         )
@@ -195,11 +195,11 @@ class TestPostgresAdapter(TestCase):
         psycopg2.connect.assert_not_called()
         connection.handle
         psycopg2.connect.assert_called_once_with(
-            dbname="postgres",
+            dbname="greenplum",
             user="root",
             host="thishostshouldnotexist",
             password="password",
-            port=5432,
+            port=7000,
             connect_timeout=10,
             application_name="myapp",
         )
@@ -221,11 +221,11 @@ class TestPostgresAdapter(TestCase):
         psycopg2.connect.assert_not_called()
         connection.handle
         psycopg2.connect.assert_called_once_with(
-            dbname="postgres",
+            dbname="greenplum",
             user="root",
             host="thishostshouldnotexist",
             password="password",
-            port=5432,
+            port=7000,
             connect_timeout=10,
             application_name="dbt",
             options="-c search_path=test",
@@ -239,11 +239,11 @@ class TestPostgresAdapter(TestCase):
         psycopg2.connect.assert_not_called()
         connection.handle
         psycopg2.connect.assert_called_once_with(
-            dbname="postgres",
+            dbname="greenplum",
             user="root",
             host="thishostshouldnotexist",
             password="password",
-            port=5432,
+            port=7000,
             connect_timeout=10,
             sslmode="require",
             application_name="dbt",
@@ -260,11 +260,11 @@ class TestPostgresAdapter(TestCase):
         psycopg2.connect.assert_not_called()
         connection.handle
         psycopg2.connect.assert_called_once_with(
-            dbname="postgres",
+            dbname="greenplum",
             user="root",
             host="thishostshouldnotexist",
             password="password",
-            port=5432,
+            port=7000,
             connect_timeout=10,
             sslmode="verify-ca",
             sslcert="service.crt",
@@ -281,11 +281,11 @@ class TestPostgresAdapter(TestCase):
         psycopg2.connect.assert_not_called()
         connection.handle
         psycopg2.connect.assert_called_once_with(
-            dbname="postgres",
+            dbname="greenplum",
             user="root",
             host="thishostshouldnotexist",
             password="password",
-            port=5432,
+            port=7000,
             connect_timeout=10,
             application_name="dbt",
             options="-c search_path=test\ test",  # noqa: [W605]
@@ -299,22 +299,22 @@ class TestPostgresAdapter(TestCase):
         psycopg2.connect.assert_not_called()
         connection.handle
         psycopg2.connect.assert_called_once_with(
-            dbname="postgres",
+            dbname="greenplum",
             user="root",
             host="thishostshouldnotexist",
             password="password",
-            port=5432,
+            port=7000,
             connect_timeout=10,
             application_name="dbt",
         )
 
-    @mock.patch.object(PostgresAdapter, "execute_macro")
-    @mock.patch.object(PostgresAdapter, "_get_catalog_relations")
+    @mock.patch.object(GreenplumAdapter, "execute_macro")
+    @mock.patch.object(GreenplumAdapter, "_get_catalog_relations")
     def test_get_catalog_various_schemas(self, mock_get_relations, mock_execute):
         self.catalog_test(mock_get_relations, mock_execute, False)
 
-    @mock.patch.object(PostgresAdapter, "execute_macro")
-    @mock.patch.object(PostgresAdapter, "_get_catalog_relations")
+    @mock.patch.object(GreenplumAdapter, "execute_macro")
+    @mock.patch.object(GreenplumAdapter, "_get_catalog_relations")
     def test_get_filtered_catalog(self, mock_get_relations, mock_execute):
         self.catalog_test(mock_get_relations, mock_execute, True)
 
